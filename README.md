@@ -1,2 +1,2 @@
-# CMPS_DS_PP1
-CMPS260.OAON: Programming Project 1
+# CMPS_DS_PA1
+CMPS260.OAON: Programming Assignments
