@@ -1,0 +1,497 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>CMPS 260: Module 5 Programming Assignment</title>
+<style>* { font-family: monospace; }</style>
+<script>
+
+// NOTE: You must implement the data structures using the no prototype approach.
+//       This is what the book uses, so you can copy it.
+//       See also: https://it.pointpark.edu/tutorials/no-prototype-vs-prototype/
+
+// NOTE: Please review the following links regularly:
+//       https://it.pointpark.edu/tutorials/arrays-vs-objects/
+//       https://it.pointpark.edu/tutorials/no-prototype-vs-prototype/
+//       https://it.pointpark.edu/tutorials/implementation-vs-interface/
+
+//------------------------------------//
+// The binary and binary search trees //
+//------------------------------------//
+console.log("The binary and binary search trees");
+
+function BinarySearchTree() {
+  function Node(key) {
+    this.key = key;
+    this.left = null;
+    this.right = null;
+  }
+
+  // the root node
+  var root = null;
+
+  // helper functions
+  function insertNode(node, newNode) {
+    if (newNode.key < node.key) {
+      // go to left
+      if (node.left === null) {
+        // no left node yet so assign
+        node.left = newNode;
+      }
+      else {
+        // move down tree and repeat
+        insertNode(node.left, newNode);
+      }
+    }
+    else {
+      // go to right
+      if (node.right === null) {
+        // no right node yet so assign
+        node.right = newNode;
+      }
+      else {
+        // move down tree and repeat
+        insertNode(node.right, newNode);
+      }
+    }
+  }
+
+  function searchNode(node, key) {
+    if (node === null) {
+      return false;
+    }
+
+    if (key < node.key) {
+      return searchNode(node.left, key);
+    }
+    else if (key > node.key) {
+      return searchNode(node.right, key);
+    }
+    else {
+      return true;
+    }
+  }
+
+  function inOrderTraverseNode(node, callback) {
+    if (node !== null) {
+      inOrderTraverseNode(node.left, callback);
+      callback(node.key);
+      inOrderTraverseNode(node.right, callback);
+    }
+  }
+
+  function preOrderTraverseNode(node, callback) {
+    if (node !== null) {
+      callback(node.key);
+      preOrderTraverseNode(node.left, callback);
+      preOrderTraverseNode(node.right, callback);
+    }
+  }
+
+  function postOrderTraverseNode(node, callback) {
+    if (node !== null) {
+      postOrderTraverseNode(node.left, callback);
+      postOrderTraverseNode(node.right, callback);
+      callback(node.key);
+    }
+  }
+
+  function minNode(node) {
+    while (node && node.left !== null) {
+      node = node.left;
+    }
+
+    return node;
+  }
+
+  function maxNode(node) {
+    while (node && node.right !== null) {
+      node = node.right;
+    }
+
+    return node;
+  }
+
+  this.insert = function(key) {
+    // insert new key in the tree
+    var newNode = new Node(key);
+    if (root === null) {
+      // no nodes yet
+      root = newNode;
+    }
+    else {
+      // find insert location through insertNode
+      insertNode(root, newNode);
+    }
+  };
+
+  this.search = function(key) {
+    // search for key and return true if found, false otherwise
+
+    return searchNode(root, key);
+  };
+
+  this.inOrderTraverse = function(callback) {
+    // visit all nodes of the tree using in-order traversal
+    // call callback with each key encountered
+
+    inOrderTraverseNode(root, callback);
+  };
+
+  this.preOrderTraverse = function(callback) {
+    // visit all nodes of the tree using pre-order traversal
+    // call callback with each key encountered
+
+    preOrderTraverseNode(root, callback);
+  };
+
+  this.postOrderTraverse = function(callback) {
+    // visit all nodes of the tree using post-order traversal
+    // call callback with each key encountered
+
+    postOrderTraverseNode(root, callback);
+  };
+
+  this.min = function() {
+    // return the minimum key in the tree
+
+    var node = minNode(root);
+    return node ? node.key : null;
+  };
+
+  this.max = function() {
+    // return the maximum key in the tree
+
+    var node = maxNode(root);
+    return node ? node.key : null;
+  };
+
+  this.remove = function() {
+    // removes the key from the tree
+
+    // Not implemented in this assignment section.
+  };
+
+  this.print = function() {
+    function print(node) {
+      // check if not is not null
+      if (node !== null) {
+        // text for left child
+        var leftChild = node.left !== null ? node.left.key : "None";
+        // text for right child
+        var rightChild = node.right !== null ? node.right.key : "None";
+        // print output
+        console.log(leftChild + " <-- " + node.key + " --> " + rightChild);
+        // traverse left
+        print(node.left);
+        // traverse right
+        print(node.right);
+      }
+    }
+    console.log("===tree===");
+    print(root);
+    console.log("==========");
+  };
+}
+
+// 1. Complete the construction of the tree below based on the example from
+//    the book.
+
+var tree = new BinarySearchTree();
+
+tree.insert(11);
+tree.insert(7);
+tree.insert(15);
+tree.insert(5);
+tree.insert(3);
+tree.insert(9);
+tree.insert(8);
+tree.insert(10);
+tree.insert(13);
+tree.insert(12);
+tree.insert(14);
+tree.insert(20);
+tree.insert(18);
+tree.insert(25);
+
+tree.print();
+
+
+//----------------//
+// Tree traversal //
+//----------------//
+console.log("Tree traversal");
+
+function printNode(value) {
+  console.log(value);
+}
+
+// 1. Implement in-order traversal. Test your implementation with the
+//    printNode() function given above.
+//    NOTE: in-order means all keys are visited in sorted order.
+
+console.log("In Order");
+tree.inOrderTraverse(printNode);
+
+// 2. Implement pre-order traversal. Test your implementation with the
+//    printNode() function given above.
+//    NOTE: pre-order means a node is visited prior to its descendants.
+
+console.log("Pre Order");
+tree.preOrderTraverse(printNode);
+
+// 3. Implement post-order traversal. Test your implementation with the
+//    printNode() function given above.
+//    NOTE: pre-order means a node is visited after its descendants.
+
+console.log("Post Order");
+tree.postOrderTraverse(printNode);
+
+
+
+//--------------------------------//
+// Searching for values in a tree //
+//--------------------------------//
+console.log("Searching for values in a tree");
+
+// 1. Implement the min method above and show that it works.
+
+console.log("Minimum:", tree.min());
+
+// 2. Implement the max method above and show that it works.
+
+console.log("Maximum:", tree.max());
+
+// 3. Implement the search method above and show that it works.
+
+console.log("Search 8:", tree.search(8));
+console.log("Search 100:", tree.search(100));
+
+
+//--------------------------//
+// Creating the Graph class //
+//--------------------------//
+console.log("Creating the Graph class");
+
+// 1. Implement the Graph class.
+
+function Graph() {
+
+  var vertices = [];
+  var adjList = {};
+
+  this.addVertex = function(v) {
+    vertices.push(v);
+    adjList[v] = [];
+  };
+
+  this.addEdge = function(v, w) {
+    adjList[v].push(w);
+    adjList[w].push(v);
+  };
+
+  this.toString = function() {
+    var s = "";
+
+    for (var i = 0; i < vertices.length; i++) {
+      s += vertices[i] + " -> ";
+
+      for (var j = 0; j < adjList[vertices[i]].length; j++) {
+        s += adjList[vertices[i]][j] + " ";
+      }
+
+      s += "\n";
+    }
+
+    return s;
+  };
+
+  // 1. Implement breadth-first search in the Graph class above.
+
+  this.bfs = function(startVertex) {
+
+    var color = {};
+    var queue = [];
+
+    for (var i = 0; i < vertices.length; i++) {
+      color[vertices[i]] = "white";
+    }
+
+    queue.push(startVertex);
+
+    while (queue.length > 0) {
+
+      var u = queue.shift();
+
+      color[u] = "grey";
+
+      var neighbors = adjList[u];
+
+      for (var i = 0; i < neighbors.length; i++) {
+
+        var w = neighbors[i];
+
+        if (color[w] === "white") {
+          color[w] = "grey";
+          queue.push(w);
+        }
+      }
+
+      color[u] = "black";
+      console.log(u);
+    }
+  };
+
+  // 2. Implement depth-first search in the Graph class above.
+
+  this.dfs = function() {
+
+    var color = {};
+
+    for (var i = 0; i < vertices.length; i++) {
+      color[vertices[i]] = "white";
+    }
+
+    function dfsVisit(u) {
+
+      color[u] = "grey";
+
+      console.log(u);
+
+      var neighbors = adjList[u];
+
+      for (var i = 0; i < neighbors.length; i++) {
+
+        var w = neighbors[i];
+
+        if (color[w] === "white") {
+          dfsVisit(w);
+        }
+      }
+
+      color[u] = "black";
+    }
+
+    for (var i = 0; i < vertices.length; i++) {
+
+      if (color[vertices[i]] === "white") {
+        dfsVisit(vertices[i]);
+      }
+    }
+  };
+}
+
+// 2. Test the Graph class with the example from the book.
+
+var graph = new Graph();
+
+var myVertices = ['A','B','C','D','E','F','G','H','I'];
+
+for (var i = 0; i < myVertices.length; i++) {
+  graph.addVertex(myVertices[i]);
+}
+
+graph.addEdge('A','B');
+graph.addEdge('A','C');
+graph.addEdge('A','D');
+graph.addEdge('C','D');
+graph.addEdge('C','G');
+graph.addEdge('D','G');
+graph.addEdge('D','H');
+graph.addEdge('B','E');
+graph.addEdge('B','F');
+graph.addEdge('E','I');
+
+console.log(graph.toString());
+
+
+
+//------------------//
+// Graph traversals //
+//------------------//
+console.log("Graph traversals");
+
+// 1. Implement breadth-first search in the Graph class above.
+
+console.log("Breadth First Search:");
+graph.bfs('A');
+
+// 2. Implement depth-first search in the Graph class above.
+
+console.log("Depth First Search:");
+graph.dfs();
+
+
+//--------------------------//
+// Shortest path algorithms //
+//--------------------------//
+console.log("Shortest path algorithms");
+
+// 1. Implement Dijkstra's algorithm.
+//    NOTE: Replace INF (used in the book) with Infinity.
+
+function dijkstra(graph, src) {
+
+  var dist = [];
+  var visited = [];
+
+  for (var i = 0; i < graph.length; i++) {
+    dist[i] = Infinity;
+    visited[i] = false;
+  }
+
+  dist[src] = 0;
+
+  for (var count = 0; count < graph.length - 1; count++) {
+
+    var min = Infinity;
+    var u = -1;
+
+    for (var v = 0; v < graph.length; v++) {
+
+      if (!visited[v] && dist[v] <= min) {
+        min = dist[v];
+        u = v;
+      }
+    }
+
+    visited[u] = true;
+
+    for (var v = 0; v < graph.length; v++) {
+
+      if (
+        !visited[v] &&
+        graph[u][v] !== 0 &&
+        dist[u] !== Infinity &&
+        dist[u] + graph[u][v] < dist[v]
+      ) {
+        dist[v] = dist[u] + graph[u][v];
+      }
+    }
+  }
+
+  return dist;
+}
+
+// 2. Test your implementation of Dijkstra's algorithm.
+
+var graphMatrix = [
+  [0,2,4,0,0,0],
+  [2,0,2,4,2,0],
+  [4,2,0,0,3,0],
+  [0,4,0,0,3,2],
+  [0,2,3,3,0,2],
+  [0,0,0,2,2,0]
+];
+
+var shortestPaths = dijkstra(graphMatrix, 0);
+
+console.log("Shortest Paths from Vertex 0:");
+console.log(shortestPaths);
+
+</script>
+</head>
+<body>
+  See console!
+</body>
+</html>
