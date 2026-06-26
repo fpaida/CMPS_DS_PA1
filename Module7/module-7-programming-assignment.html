@@ -1,0 +1,169 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>CMPS 260: Module 7 Programming Assignment</title>
+<style>* { font-family: monospace; }</style>
+<script>
+
+// NOTE: You must implement the data structures using the no prototype approach.
+//       This is what the book uses, so you can copy it.
+//       See also: https://it.pointpark.edu/tutorials/no-prototype-vs-prototype/
+
+// NOTE: Please review the following links regularly:
+//       https://it.pointpark.edu/tutorials/arrays-vs-objects/
+//       https://it.pointpark.edu/tutorials/no-prototype-vs-prototype/
+//       https://it.pointpark.edu/tutorials/implementation-vs-interface/
+
+
+
+//-----------//
+// Recursion //
+//-----------//
+console.log("Recursion");
+
+// 1. Implement fibonacci using a recursive function and test your code.
+
+function fibonacci(num) {
+    if (num < 2) {
+        return num;
+    }
+
+    return fibonacci(num - 1) + fibonacci(num - 2);
+}
+
+console.log("Fibonacci Sequence:");
+
+for (var i = 0; i <= 10; i++) {
+    console.log("fib(" + i + ") = " + fibonacci(i));
+}
+
+
+//---------------------//
+// Dynamic programming //
+//---------------------//
+console.log("Dynamic programming");
+
+// 1. Implement the minimum coin change problem using dynamic programming.
+//    Test your code.
+
+function MinCoinChange(coins) {
+
+    var cache = {};
+
+    this.makeChange = function(amount) {
+
+        if (!amount) {
+            return [];
+        }
+
+        if (cache[amount]) {
+            return cache[amount];
+        }
+
+        var min = [];
+        var newMin;
+        var newAmount;
+
+        for (var i = 0; i < coins.length; i++) {
+
+            var coin = coins[i];
+            newAmount = amount - coin;
+
+            if (newAmount >= 0) {
+                newMin = this.makeChange(newAmount);
+            }
+
+            if (
+                newAmount >= 0 &&
+                (newMin.length < min.length - 1 || !min.length) &&
+                (newMin.length || newAmount === 0)
+            ) {
+                min = [coin].concat(newMin);
+            }
+        }
+
+        cache[amount] = min;
+
+        return min;
+    };
+}
+
+var minCoin = new MinCoinChange([1, 5, 10, 25]);
+
+console.log("Coins for 36:", minCoin.makeChange(36));
+console.log("Coins for 99:", minCoin.makeChange(99));
+
+
+
+///-------------------//
+// Greedy algorithms //
+//-------------------//
+console.log("Greedy algorithms");
+
+// 1. Implement the minimum coin change problem using a greedy algorithm.
+//    Test your code.
+
+function MinCoinChangeGreedy(coins) {
+
+    this.makeChange = function(amount) {
+
+        var change = [];
+
+        for (var i = coins.length - 1; i >= 0; i--) {
+
+            var coin = coins[i];
+
+            while (amount >= coin) {
+                change.push(coin);
+                amount -= coin;
+            }
+        }
+
+        return change;
+    };
+}
+
+var greedy = new MinCoinChangeGreedy([1, 5, 10, 25]);
+
+console.log("Greedy coins for 36:", greedy.makeChange(36));
+console.log("Greedy coins for 99:", greedy.makeChange(99));
+
+
+//----------------------------------------//
+// Introduction to functional programming //
+//----------------------------------------//
+console.log("Introduction to functional programming");
+
+// 1. Solve the problem of obtaining all the positive numbers in an array using
+//    imperative style.
+
+var numbers = [-4, 5, -2, 8, -1, 3, -9, 6];
+
+var positives = [];
+
+for (var i = 0; i < numbers.length; i++) {
+
+    if (numbers[i] > 0) {
+        positives.push(numbers[i]);
+    }
+
+}
+
+console.log("Imperative:", positives);
+
+// 2. Solve the problem of obtaining all the positive numbers in an array using
+//    functional style.
+
+var positivesFunctional = numbers.filter(function(number) {
+    return number > 0;
+});
+
+console.log("Functional:", positivesFunctional);
+
+</script>
+</head>
+<body>
+  See console!
+</body>
+</html>
